@@ -1,4 +1,4 @@
-name: Ubuntu
+name: CI
 
 on: [push, workflow_dispatch]
 
@@ -40,15 +40,9 @@ jobs:
         echo "export XDG_CONFIG_DIRS='/etc/xdg'" >> ~/.bashrc
         source ~/.bashrc
 
-    - name: Kill any existing xrdp sessions
+    - name: Start xrdp (No need to stop it)
       run: |
-        sudo pkill xrdp
-        sudo pkill xrdp-sesman
-        sudo pkill Xorg
-
-    - name: Restart xrdp
-      run: |
-        sudo /etc/init.d/xrdp restart
+        sudo /etc/init.d/xrdp start
 
     - name: Create ngrok Tunnel for RDP
       run: ngrok tcp 3389
