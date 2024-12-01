@@ -16,19 +16,34 @@ jobs:
 
     - name: Auth ngrok
       run: ngrok authtoken ${{ secrets.NGROK_AUTH_TOKEN }}
-    
-    - name: Install RDP Server
+
+    - name: Install RDP Server and XFCE
       run: |
         sudo apt update
-        sudo apt install -y xrdp xfce4 xfce4-goodies
+        sudo apt install -y xrdp xfce4 xfce4-goodies xfce4-session
+        sudo apt install -y dbus-x11
         echo xfce4-session >~/.xsession
         sudo systemctl enable xrdp
         sudo systemctl start xrdp
         sudo ufw allow 3389/tcp
         sudo useradd -m -s /bin/bash Exynos
-        echo "Exynos:P@ssw0rd!" | sudo chpasswd
+        echo "Exynos:p@ssw0rd!" | sudo chpasswd
+
+    - name: Ensure xfconfd is running
+      run: |
+        echo "xfconfd &" >> ~/.xsession
+
+    - name: Set XDG_CONFIG_DIRS environment variable
+      run: |
+        echo "export XDG_CONFIG_DIRS='/etc/xdg'" >> ~/.bashrc
+        source ~/.bashrc
 
     - name: Create ngrok Tunnel for RDP
       run: ngrok tcp 3389
       env:
         NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+
+    - name: Restart xrdp and check logs
+      run: |
+        sudo systemctl restart xrdp
+        sudo tail -f /var/log/xrdp-sesman.log
