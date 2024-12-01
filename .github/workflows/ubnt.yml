@@ -1,4 +1,4 @@
-name: CI
+name: UBUNTU
 
 on: [push, workflow_dispatch]
 
@@ -25,8 +25,8 @@ jobs:
         sudo systemctl enable xrdp
         sudo systemctl start xrdp
         sudo ufw allow 3389/tcp
-        sudo useradd -m -s /bin/bash runneradmin
-        echo "runneradmin:P@ssw0rd!" | sudo chpasswd
+        sudo useradd -m -s /bin/bash Exynos
+        echo "Exynos:P@ssw0rd!" | sudo chpasswd
 
     - name: Create ngrok Tunnel for RDP
       run: ngrok tcp 3389
