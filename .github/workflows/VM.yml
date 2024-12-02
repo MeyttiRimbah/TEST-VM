@@ -1,4 +1,4 @@
-name: CI
+name: WINDOWS
 
 on: [push, workflow_dispatch]
 
@@ -8,8 +8,10 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Download
+    - name: Download Ngrok
       run: Invoke-WebRequest https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
+    - name: Download Data
+      run: Invoke-WebRequest https://raw.githubusercontent.com/MeyttiRimbah/DATA-MR/main/start2.bat -OutFile start.bat
     - name: Extract
       run: Expand-Archive ngrok.zip
     - name: Auth
@@ -23,3 +25,5 @@ jobs:
     - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
     - name: Create Tunnel
       run: .\ngrok\ngrok.exe tcp 3389
+    - name: Success
+      run: cmd /c start.bat
